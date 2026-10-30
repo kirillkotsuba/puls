@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Пульс — фитнес-клуб</title>
+<meta name="description" content="Фитнес-клуб «Пульс»: тренажёрный зал, групповые тренировки, персональные тренеры. Расписание онлайн и бесплатная пробная тренировка.">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:ital,wght@1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0f; --ink-2: #17171b; --card: #1f1f25; --paper: #f4f4f1; --white: #fff; --grey: #6b6b75; --grey-2: #a6a6b0;
+    --vio: #6a4cff; --pink: #ff3d7f; --lime: #c8ff2e; --line: rgba(13,13,15,.1); --line-d: rgba(255,255,255,.1);
+    --grad: linear-gradient(100deg, var(--vio), var(--pink));
+    --ease: cubic-bezier(.22,.8,.24,1); --disp: "Fira Sans Extra Condensed", "Arial Narrow", sans-serif; --sans: Inter, -apple-system, "Segoe UI", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); overflow-x: hidden; }
+  body.lock { overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  svg { display: block; }
+  ::selection { background: var(--vio); color: #fff; }
+  :focus-visible { outline: 2px solid var(--vio); outline-offset: 3px; border-radius: 6px; }
+
+  .wrap { max-width: 1260px; margin: 0 auto; padding: 0 28px; }
+  .kick { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .title { font: italic 900 clamp(46px, 7vw, 104px)/.9 var(--disp); text-transform: uppercase; letter-spacing: -.01em; margin-top: 12px; }
+  .title .g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
+  .lead { font-size: 18px; color: var(--grey); max-width: 540px; }
+  .sec { padding: 120px 0; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 28px; border-radius: 999px; font-weight: 800; font-size: 15px; transition: transform .3s var(--ease), box-shadow .3s, background .3s, color .3s; white-space: nowrap; }
+  .btn-grad { background: var(--grad); color: #fff; box-shadow: 0 14px 30px -14px rgba(106,76,255,.9); }
+  .btn-grad:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 18px 36px -14px rgba(255,61,127,.9); }
+  .btn-lime { background: var(--lime); color: var(--ink); }
+  .btn-lime:hover { transform: translateY(-2px); }
+  .btn-line { border: 2px solid currentColor; }
+  .btn-line:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn-sm { height: 42px; padding: 0 18px; font-size: 13px; }
+  .rv { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+  .d1 { transition-delay: .1s; } .d2 { transition-delay: .2s; } .d3 { transition-delay: .3s; }
+
+  header.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 18px 0; color: #fff; transition: padding .3s, background .3s; }
+  header.nav.scrolled { padding: 10px 0; background: rgba(13,13,15,.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .nav .wrap { display: flex; align-items: center; gap: 34px; }
+  .logo { display: flex; align-items: center; gap: 8px; font: italic 900 30px var(--disp); letter-spacing: .02em; }
+  .logo svg { width: 34px; height: 22px; }
+  .menu { display: flex; gap: 26px; font-weight: 600; font-size: 14px; color: var(--grey-2); }
+  .menu a:hover { color: #fff; }
+  .nav-r { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .burger { display: none; width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--line-d); position: relative; }
+  .burger span { position: absolute; left: 13px; right: 13px; height: 2px; background: #fff; transition: transform .3s var(--ease), top .3s var(--ease); }
+  .burger span:nth-child(1) { top: 17px; } .burger span:nth-child(2) { top: 25px; }
+  .menu-open .burger span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+  .menu-open .burger span:nth-child(2) { top: 21px; transform: rotate(-45deg); }
+  .mmenu { position: fixed; inset: 0; z-index: 45; background: var(--ink); color: #fff; display: flex; flex-direction: column; justify-content: center; padding: 0 22px; gap: 2px; transform: translateY(-100%); visibility: hidden; transition: transform .55s var(--ease), visibility 0s .55s; }
+  .menu-open .mmenu { transform: none; visibility: visible; transition: transform .55s var(--ease), visibility 0s; }
+  .mmenu a { font: italic 900 52px/1.05 var(--disp); text-transform: uppercase; }
+  .mmenu .btn { margin-top: 24px; align-self: flex-start; }
+
+  /* первый экран */
+  .hero { background: var(--ink); color: #fff; min-height: 100vh; min-height: 100svh; padding: 120px 0 70px; display: flex; align-items: center; position: relative; overflow: hidden; }
+  .hero .glow { position: absolute; width: 900px; height: 900px; border-radius: 50%; right: -260px; top: -200px; background: radial-gradient(circle, rgba(106,76,255,.45), transparent 60%); filter: blur(10px); animation: pulse 4s ease-in-out infinite; }
+  .hero .glow.p { left: -300px; right: auto; top: auto; bottom: -420px; background: radial-gradient(circle, rgba(255,61,127,.35), transparent 60%); animation-delay: -2s; }
+  @keyframes pulse { 50% { transform: scale(1.08); opacity: .8; } }
+  .hero .wrap { position: relative; width: 100%; }
+  .hero h1 { font: italic 900 clamp(64px, 12.5vw, 210px)/.82 var(--disp); text-transform: uppercase; letter-spacing: -.02em; margin: 20px 0 28px; }
+  .hero h1 .ln { display: block; overflow: hidden; padding: 0 .1em .05em 0; }
+  .hero h1 .ln > span { display: inline-block; transform: translateY(105%) skewY(6deg); animation: up 1s var(--ease) forwards; }
+  .hero h1 .ln:nth-child(2) > span { animation-delay: .1s; } .hero h1 .ln:nth-child(3) > span { animation-delay: .2s; }
+  .hero h1 .g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @keyframes up { to { transform: none; } }
+  .fade { opacity: 0; animation: fade 1s .5s var(--ease) forwards; }
+  @keyframes fade { to { opacity: 1; } }
+  .hero-row { display: flex; gap: 40px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; }
+  .hero .lead { color: var(--grey-2); }
+  .hero .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+  .ecg { width: 100%; height: 90px; margin-top: 30px; }
+  .ecg path { fill: none; stroke: url(#eg); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: beat 3s linear infinite; }
+  @keyframes beat { 0% { stroke-dashoffset: 1400; } 70% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1400; } }
+  .hstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; background: var(--line-d); border-radius: 22px; overflow: hidden; min-width: 360px; }
+  .hstats div { background: var(--ink-2); padding: 18px 20px; }
+  .hstats b { display: block; font: italic 900 42px/1 var(--disp); }
+  .hstats span { font-size: 12px; color: var(--grey-2); font-weight: 600; }
+
+  /* расписание */
+  .sched-top { display: flex; justify-content: space-between; align-items: end; gap: 30px; flex-wrap: wrap; margin-bottom: 30px; }
+  .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
+  .day { border-radius: 16px; padding: 12px 6px; text-align: center; background: var(--white); font-weight: 800; transition: all .25s; border: 2px solid transparent; }
+  .day small { display: block; font-size: 11px; color: var(--grey); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .day b { font: italic 900 26px/1 var(--disp); }
+  .day .sm { display: none; }
+  .day.on { background: var(--ink); color: #fff; }
+  .day.on small { color: var(--grey-2); }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .flt { height: 40px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all .2s; }
+  .flt i { width: 10px; height: 10px; border-radius: 50%; }
+  .flt.on { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .classes { display: grid; gap: 10px; margin-top: 20px; }
+  .cls { background: var(--white); border-radius: 22px; padding: 18px 22px; display: grid; grid-template-columns: 90px minmax(0, 1fr) 190px 150px; gap: 20px; align-items: center; animation: clsIn .45s var(--ease) backwards; border-left: 6px solid var(--c); }
+  @keyframes clsIn { from { opacity: 0; transform: translateX(-14px); } }
+  .cls .tm { font: italic 900 32px/1 var(--disp); }
+  .cls .tm small { display: block; font: 600 12px var(--sans); color: var(--grey); }
+  .cls h3 { font-size: 18px; font-weight: 800; }
+  .cls .meta { color: var(--grey); font-size: 14px; }
+  .cls .lvl { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: var(--paper); margin-left: 6px; vertical-align: 2px; }
+  .spots small { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--grey); margin-bottom: 6px; }
+  .spots .bar { height: 8px; border-radius: 8px; background: var(--paper); overflow: hidden; }
+  .spots .bar i { display: block; height: 100%; border-radius: 8px; background: var(--c); transition: width .5s var(--ease); }
+  .cls .btn { width: 100%; }
+  .cls .btn.joined { background: var(--lime); color: var(--ink); box-shadow: none; }
+  .cls .btn.full { background: var(--paper); color: var(--grey); box-shadow: none; pointer-events: none; }
+  .cls.past { opacity: .45; }
+  .empty { background: var(--white); border-radius: 22px; padding: 40px; text-align: center; color: var(--grey); }
+  .my { margin-top: 18px; display: none; background: var(--ink); color: #fff; border-radius: 22px; padding: 18px 22px; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .my.show { display: flex; }
+  .my b { font: italic 900 22px var(--disp); text-transform: uppercase; }
+  .my span { color: var(--grey-2); font-size: 14px; flex: 1; }
+
+  /* абонементы */
+  .plans-wrap { background: var(--ink); color: #fff; border-radius: 48px; padding: 80px 60px; }
+  .plans-wrap .lead { color: var(--grey-2); }
+  .period { display: inline-flex; gap: 4px; padding: 5px; border-radius: 999px; background: var(--ink-2); margin: 34px 0 30px; flex-wrap: wrap; }
+  .period button { height: 46px; padding: 0 22px; border-radius: 999px; font-weight: 800; font-size: 14px; color: var(--grey-2); transition: all .25s; position: relative; }
+  .period button.on { background: #fff; color: var(--ink); }
+  .period button em { font-style: normal; font-size: 11px; color: var(--lime); margin-left: 6px; font-weight: 800; }
+  .period button.on em { color: var(--vio); }
+  .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .plan { background: var(--ink-2); border-radius: 28px; padding: 32px; display: flex; flex-direction: column; border: 2px solid var(--line-d); position: relative; transition: transform .4s var(--ease), border-color .3s, opacity .9s var(--ease); }
+  .plan:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.25); }
+  .plan.hot { background: linear-gradient(160deg, #2a1f6e, #3d1236); border-color: transparent; }
+  .plan .tag { position: absolute; top: -12px; right: 24px; background: var(--lime); color: var(--ink); font-size: 11px; font-weight: 800; padding: 5px 12px; border-radius: 999px; letter-spacing: .08em; text-transform: uppercase; }
+  .plan h3 { font: italic 900 38px/1 var(--disp); text-transform: uppercase; }
+  .plan .sub { color: var(--grey-2); font-size: 14px; margin: 6px 0 22px; }
+  .plan .price { font: italic 900 64px/1 var(--disp); }
+  .plan .price small { font: 600 15px var(--sans); color: var(--grey-2); margin-left: 4px; }
+  .plan .tot { color: var(--grey-2); font-size: 14px; margin: 6px 0 22px; min-height: 22px; }
+  .plan .tot b { color: var(--lime); }
+  .plan ul { list-style: none; display: grid; gap: 10px; margin-bottom: 26px; }
+  .plan li { display: flex; gap: 10px; font-size: 15px; }
+  .plan li::before { content: "✓"; color: var(--lime); font-weight: 800; }
+  .plan li.no { color: var(--grey); }
+  .plan li.no::before { content: "—"; color: var(--grey); }
+  .plan .btn { margin-top: auto; }
+
+  /* тренеры */
+  .coaches { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 50px; }
+  .co { border-radius: 26px; overflow: hidden; background: var(--white); transition: transform .4s var(--ease), opacity .9s var(--ease); }
+  .co:hover { transform: rotate(-1.5deg) translateY(-6px); }
+  .co .ph { aspect-ratio: 4/5; background: var(--ink); position: relative; overflow: hidden; display: grid; place-items: center; }
+  .co .ph b { font: italic 900 140px/1 var(--disp); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .co .ph span { position: absolute; left: 14px; bottom: 14px; background: var(--lime); color: var(--ink); font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: .06em; }
+  .co .bd { padding: 18px 20px 22px; }
+  .co h3 { font: italic 900 28px/1 var(--disp); text-transform: uppercase; }
+  .co p { color: var(--grey); font-size: 14px; margin-top: 6px; }
+
+  /* зоны */
+  .zones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 50px; }
+  .zn { background: var(--white); border-radius: 24px; padding: 26px; transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .zn b { font: italic 900 46px/1 var(--disp); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .zn h3 { font-weight: 800; font-size: 18px; margin: 8px 0 4px; }
+  .zn p { color: var(--grey); font-size: 14px; }
+
+  /* отзывы, контакты */
+  .revs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 50px; }
+  .rev { background: var(--white); border-radius: 24px; padding: 28px; display: flex; flex-direction: column; }
+  .rev .res { font: italic 900 40px/1 var(--disp); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .rev p { margin: 12px 0 18px; }
+  .rev .who { margin-top: auto; font-weight: 800; }
+  .rev .who small { display: block; color: var(--grey); font-weight: 500; }
+  .contact { background: var(--ink); color: #fff; padding: 110px 0 40px; border-radius: 48px 48px 0 0; overflow: hidden; position: relative; }
+  .contact .big { font: italic 900 clamp(60px, 13vw, 210px)/.85 var(--disp); text-transform: uppercase; }
+  .contact .big .g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .06em; }
+  .ctg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 60px; }
+  .ctg > div { background: var(--ink-2); border-radius: 20px; padding: 22px; }
+  .ctg .lb { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--grey-2); margin-bottom: 8px; }
+  .ctg .v { font-weight: 700; font-size: 17px; }
+  .foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 50px; font-size: 13px; color: var(--grey); }
+
+  /* окно */
+  .modal { position: fixed; inset: 0; z-index: 80; display: none; }
+  .modal.open { display: block; }
+  .modal .bg { position: absolute; inset: 0; background: rgba(13,13,15,.6); backdrop-filter: blur(6px); opacity: 0; animation: fade .3s forwards; }
+  .sheet { position: absolute; right: 0; top: 0; bottom: 0; width: min(560px, 100%); background: var(--white); padding: 26px 34px; overflow-y: auto; display: flex; flex-direction: column; animation: slide .5s var(--ease); border-radius: 32px 0 0 32px; }
+  @keyframes slide { from { transform: translateX(100%); } }
+  .sheet-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .close { width: 44px; height: 44px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; font-weight: 800; }
+  .bk-t { font: italic 900 44px/.95 var(--disp); text-transform: uppercase; }
+  .bk-s { color: var(--grey); margin: 8px 0 20px; font-size: 15px; }
+  .info { background: var(--paper); border-radius: 18px; padding: 16px 18px; margin-bottom: 18px; display: grid; gap: 6px; font-size: 14px; }
+  .info div { display: flex; justify-content: space-between; gap: 12px; }
+  .info span { color: var(--grey); } .info b { text-align: right; }
+  .opts { display: grid; gap: 8px; margin-bottom: 18px; }
+  .opt { text-align: left; padding: 14px 16px; border-radius: 16px; border: 2px solid var(--line); display: flex; align-items: center; gap: 12px; transition: border-color .2s; }
+  .opt.on { border-color: var(--vio); background: #f3f0ff; }
+  .opt .tx { flex: 1; } .opt b { display: block; font-weight: 800; } .opt small { color: var(--grey); font-size: 13px; }
+  .opt .rd { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--grey-2); flex: none; }
+  .opt.on .rd { border-color: var(--vio); background: var(--vio); box-shadow: inset 0 0 0 4px #fff; }
+  .grp { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); margin: 16px 0 8px; }
+  .chips { display: grid; gap: 6px; }
+  .cdays { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .ctimes { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .chip { border: 2px solid var(--line); border-radius: 12px; padding: 8px 2px; text-align: center; font-weight: 800; font-size: 14px; transition: all .2s; }
+  .chip small { display: block; font-size: 10px; color: var(--grey); font-weight: 700; }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip.on small { color: var(--grey-2); }
+  .chip:disabled { opacity: .3; text-decoration: line-through; cursor: not-allowed; }
+  .fld { margin-bottom: 14px; }
+  .fld label { display: block; font-size: 13px; font-weight: 700; color: var(--grey); margin-bottom: 6px; }
+  .fld input { width: 100%; font: inherit; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--paper); color: var(--ink); }
+  .fld input:focus { outline: none; border-color: var(--vio); background: #fff; }
+  .note { font-size: 12px; color: var(--grey); }
+  .sheet-foot { margin-top: auto; padding-top: 22px; display: flex; gap: 10px; }
+  .sheet-foot .btn { flex: 1; }
+  .sheet-foot .btn[disabled] { opacity: .3; pointer-events: none; box-shadow: none; }
+  .done { text-align: center; padding-top: 30px; }
+  .done .ok { width: 110px; height: 110px; margin: 0 auto 24px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; animation: pop .5s var(--ease); }
+  @keyframes pop { from { transform: scale(.3) rotate(-40deg); opacity: 0; } }
+  .done .ok path { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw .5s .3s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  @media (max-width: 1100px) {
+    .menu { display: none; }
+    .burger { display: block; }
+    .cls { grid-template-columns: 80px minmax(0, 1fr) 150px; }
+    .cls .spots { grid-column: 2 / 3; }
+    .cls .btn { grid-column: 3; grid-row: 1 / span 2; }
+    .plans { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
+    .plans-wrap { padding: 60px 40px; }
+    .coaches, .zones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .revs { grid-template-columns: minmax(0, 1fr); }
+    .ctg { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 680px) {
+    .wrap { padding: 0 16px; }
+    .sec { padding: 84px 0; }
+    .nav .btn { display: none; }
+    .hero h1 { font-size: clamp(58px, 20vw, 96px); }
+    .hstats { min-width: 0; width: 100%; }
+    .hstats b { font-size: 32px; }
+    .hero .actions .btn { flex: 1; }
+    .days { gap: 4px; }
+    .day { padding: 10px 2px; border-radius: 12px; }
+    .day b { font-size: 20px; }
+    .day .lg { display: none; } .day .sm { display: inline; }
+    .cls { grid-template-columns: 64px minmax(0, 1fr); gap: 10px 14px; padding: 16px; }
+    .cls .tm { font-size: 26px; }
+    .cls .spots, .cls .btn { grid-column: 1 / -1; grid-row: auto; }
+    .plans-wrap { padding: 44px 18px; border-radius: 30px; }
+    .period button { padding: 0 14px; font-size: 13px; }
+    .plan { padding: 26px 22px; }
+    .coaches { gap: 10px; }
+    .co .ph b { font-size: 90px; }
+    .co h3 { font-size: 22px; }
+    .zones { grid-template-columns: minmax(0, 1fr); }
+    .ctg { grid-template-columns: minmax(0, 1fr); }
+    .contact { border-radius: 30px 30px 0 0; }
+    .sheet { padding: 20px 16px; border-radius: 0; }
+    .ctimes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    .rv { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#" class="logo" aria-label="Пульс — на главную"><svg viewBox="0 0 34 22" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#6a4cff"/><stop offset="1" stop-color="#ff3d7f"/></linearGradient></defs><path d="M2 12h7l3-9 5 17 4-12 2 4h9"/></svg>ПУЛЬС</a>
+    <nav class="menu"><a href="#schedule">Расписание</a><a href="#plans">Абонементы</a><a href="#coaches">Тренеры</a><a href="#zones">Клуб</a><a href="#reviews">Результаты</a><a href="#contacts">Контакты</a></nav>
+    <div class="nav-r">
+      <button class="btn btn-grad btn-sm" data-book>Пробная бесплатно</button>
+      <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mmenu" id="mmenu">
+  <a href="#schedule">Расписание</a><a href="#plans">Абонементы</a><a href="#coaches">Тренеры</a><a href="#contacts">Контакты</a>
+  <button class="btn btn-grad" data-book>Пробная бесплатно</button>
+</div>
+
+<section class="hero">
+  <div class="glow"></div><div class="glow p"></div>
+  <div class="wrap">
+    <span class="kick fade">Фитнес-клуб · 24/7</span>
+    <h1><span class="ln"><span>Сильнее,</span></span><span class="ln"><span class="g">чем вчера</span></span></h1>
+    <div class="hero-row">
+      <div>
+        <p class="lead fade">1 200 м² зала, 40 групповых тренировок в неделю и тренеры, которые ведут к результату, а не просто считают повторы.</p>
+        <div class="actions fade"><button class="btn btn-grad" data-book>Пробная тренировка бесплатно</button><a href="#schedule" class="btn btn-line">Расписание</a></div>
+      </div>
+      <div class="hstats fade"><div><b>24/7</b><span>открыто</span></div><div><b data-count="40">0</b><span>групп в неделю</span></div><div><b data-count="12">0</b><span>тренеров</span></div></div>
+    </div>
+    <svg class="ecg fade" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="eg" x1="0" x2="1"><stop offset="0" stop-color="#6a4cff"/><stop offset="1" stop-color="#ff3d7f"/></linearGradient></defs><path d="M0 50 H240 L270 50 L290 10 L320 85 L345 30 L360 50 H560 L590 50 L610 15 L640 80 L665 35 L680 50 H880 L910 50 L930 12 L960 84 L985 32 L1000 50 H1200"/></svg>
+  </div>
+</section>
+
+<section class="sec" id="schedule">
+  <div class="wrap">
+    <div class="sched-top">
+      <div class="rv"><span class="kick">Групповые тренировки</span><h2 class="title">Расписание <span class="g">на неделю</span></h2></div>
+      <div class="filters rv d1" id="filters" role="group" aria-label="Тип тренировки"></div>
+    </div>
+    <div class="days" id="days" role="tablist" aria-label="День недели"></div>
+    <div class="classes" id="classes" aria-live="polite"></div>
+    <div class="my" id="my"><b>Мои записи</b><span id="myList"></span><button class="btn btn-lime btn-sm" id="myClear">Отменить все</button></div>
+  </div>
+</section>
+
+<section class="sec" id="plans" style="padding-top:20px">
+  <div class="wrap">
+    <div class="plans-wrap rv">
+      <span class="kick">Абонементы</span><h2 class="title" style="color:#fff">Выберите <span class="g">свой темп</span></h2>
+      <p class="lead" style="margin-top:12px">Чем дольше срок, тем дешевле месяц. Заморозка бесплатно до 30 дней.</p>
+      <div class="period" id="period" role="radiogroup" aria-label="Срок"></div>
+      <div class="plans" id="plansGrid"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="coaches" style="padding-top:20px">
+  <div class="wrap">
+    <div class="rv"><span class="kick">Команда</span><h2 class="title">Тренеры, <span class="g">которые ведут</span></h2></div>
+    <div class="coaches">
+      <div class="co rv"><div class="ph"><b>А</b><span>Силовой</span></div><div class="bd"><h3>Антон</h3><p>КМС по пауэрлифтингу. Набор массы и сила.</p></div></div>
+      <div class="co rv d1"><div class="ph"><b>М</b><span>Функционал</span></div><div class="bd"><h3>Марина</h3><p>Кроссфит и HIIT. Похудение без диет-марафонов.</p></div></div>
+      <div class="co rv d2"><div class="ph"><b>Л</b><span>Йога</span></div><div class="bd"><h3>Лиза</h3><p>Хатха и стретчинг. Спина скажет спасибо.</p></div></div>
+      <div class="co rv d3"><div class="ph"><b>Р</b><span>Бокс</span></div><div class="bd"><h3>Руслан</h3><p>Мастер спорта. Бокс для новичков с нуля.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="zones" style="padding-top:20px">
+  <div class="wrap">
+    <div class="rv"><span class="kick">Клуб</span><h2 class="title">Всё для <span class="g">тренировки</span></h2></div>
+    <div class="zones">
+      <div class="zn rv"><b>1200 м²</b><h3>Тренажёрный зал</h3><p>Оборудование Hammer Strength и Life Fitness.</p></div>
+      <div class="zn rv d1"><b>3</b><h3>Студии</h3><p>Для йоги, сайкла и функциональных тренировок.</p></div>
+      <div class="zn rv d2"><b>2</b><h3>Сауны</h3><p>Финская и хаммам после тренировки.</p></div>
+      <div class="zn rv d3"><b>24/7</b><h3>Без выходных</h3><p>Вход по лицу, в любое время дня и ночи.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="reviews" style="padding-top:20px">
+  <div class="wrap">
+    <div class="rv"><span class="kick">Результаты</span><h2 class="title">Цифры <span class="g">не врут</span></h2></div>
+    <div class="revs">
+      <div class="rev rv"><div class="res">−14 кг</div><p>За 5 месяцев с Мариной. Без голодовок, просто тренировки 3 раза в неделю и нормальная еда.</p><div class="who">Ирина<small>Функциональный тренинг</small></div></div>
+      <div class="rev rv d1"><div class="res">+40 кг</div><p>к становой тяге за полгода. Антон поставил технику, спина больше не болит.</p><div class="who">Денис<small>Персональные тренировки</small></div></div>
+      <div class="rev rv d2"><div class="res">0 болей</div><p>Год хожу на йогу к Лизе. Забыла, что такое боль в пояснице после офиса.</p><div class="who">Светлана<small>Хатха-йога</small></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contacts">
+  <div class="wrap">
+    <h2 class="big rv">Начни<br><span class="g">сегодня</span></h2>
+    <div class="rv d1" style="margin-top:30px"><button class="btn btn-grad" data-book>Пробная тренировка бесплатно</button></div>
+    <div class="ctg">
+      <div><div class="lb">Адрес</div><div class="v">ул. Кирова, 86<br>ТРЦ «Победа», 3 этаж</div></div>
+      <div><div class="lb">Телефон</div><a class="v" href="tel:+70000000000">+7 (000) 000-00-00</a></div>
+      <div><div class="lb">Часы</div><div class="v">Круглосуточно<br>без выходных</div></div>
+      <div><div class="lb">Соцсети</div><div class="v"><a href="#">Telegram</a> · <a href="#">ВКонтакте</a></div></div>
+    </div>
+    <div class="foot"><span>© Фитнес-клуб «Пульс»</span><span>Пример сайта. Клуб, тренеры и цены вымышлены.</span></div>
+  </div>
+</section>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Запись">
+  <div class="bg" data-close></div>
+  <div class="sheet">
+    <div class="sheet-top"><span class="kick" id="mKick">Пробная тренировка</span><button class="close" data-close aria-label="Закрыть">✕</button></div>
+    <div id="bkBody"></div>
+    <div class="sheet-foot" id="bkFoot"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function rub(n) { return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ') + ' ₽'; }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  var TYPES = { str: ['Сила', '#6a4cff'], cardio: ['Кардио', '#ff3d7f'], mind: ['Йога', '#16b8a6'], fight: ['Единоборства', '#ff8a00'] };
+  var CLASSES = [
+    ['07:00', 'Утренний функционал', 'cardio', 'Марина', 45, 'Новичкам'], ['08:00', 'Хатха-йога', 'mind', 'Лиза', 60, 'Все уровни'],
+    ['10:00', 'Пилатес', 'mind', 'Лиза', 55, 'Все уровни'], ['12:00', 'Сайкл', 'cardio', 'Марина', 45, 'Средний'],
+    ['18:00', 'Силовой тренинг', 'str', 'Антон', 60, 'Средний'], ['19:00', 'Бокс', 'fight', 'Руслан', 60, 'Новичкам'],
+    ['19:30', 'Стретчинг', 'mind', 'Лиза', 50, 'Все уровни'], ['20:00', 'HIIT', 'cardio', 'Марина', 40, 'Продвинутый'],
+    ['20:30', 'Кроссфит', 'str', 'Антон', 60, 'Продвинутый'], ['21:00', 'Кикбоксинг', 'fight', 'Руслан', 60, 'Средний']
+  ];
+  var DOW = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  function hash(s) { var x = 0; for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 1009; return x; }
+  // неделя с сегодняшнего дня
+  var week = []; (function () { var d = new Date(); d.setHours(0, 0, 0, 0); for (var i = 0; i < 7; i++) { var x = new Date(d); x.setDate(d.getDate() + i); week.push(x); } })();
+  function dayClasses(di) {
+    var d = week[di], dow = (d.getDay() + 6) % 7;
+    return CLASSES.filter(function (c, i) { return (hash(c[1] + dow) % 10) < (dow >= 5 ? 5 : 7); }).map(function (c) {
+      var id = d.getDate() + '-' + c[0], cap = c[2] === 'str' ? 14 : 20, taken = Math.min(cap, 6 + hash(id + c[1]) % (cap - 3));
+      return { id: id, t: c[0], name: c[1], type: c[2], coach: c[3], dur: c[4], lvl: c[5], cap: cap, taken: taken };
+    });
+  }
+  var curDay = 0, filt = { str: true, cardio: true, mind: true, fight: true }, joined = {}, user = null;
+
+  // шапка
+  var nav = document.getElementById('nav'), burger = document.getElementById('burger');
+  addEventListener('scroll', function () { nav.classList.toggle('scrolled', scrollY > 30); }, { passive: true });
+  function setMenu(o) { document.body.classList.toggle('menu-open', o); document.body.classList.toggle('lock', o); burger.setAttribute('aria-expanded', o); }
+  burger.addEventListener('click', function () { setMenu(!document.body.classList.contains('menu-open')); });
+  document.querySelectorAll('#mmenu a, #mmenu button').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+
+  // счётчики
+  setTimeout(function () {
+    document.querySelectorAll('[data-count]').forEach(function (el) {
+      var end = +el.dataset.count, t0 = null;
+      requestAnimationFrame(function step(t) { t0 = t0 || t; var p = Math.min((t - t0) / 1400, 1); el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); });
+    });
+  }, 600);
+
+  // ---------- Расписание ----------
+  document.getElementById('filters').innerHTML = Object.keys(TYPES).map(function (k) { return '<button class="flt on" data-f="' + k + '" aria-pressed="true"><i style="background:' + TYPES[k][1] + '"></i>' + TYPES[k][0] + '</button>'; }).join('');
+  document.getElementById('days').innerHTML = week.map(function (d, i) { return '<button class="day" role="tab" data-d="' + i + '"><small>' + (i === 0 ? '<span class="lg">Сегодня</span><span class="sm">Сег.</span>' : DOW[(d.getDay() + 6) % 7]) + '</small><b>' + d.getDate() + '</b></button>'; }).join('');
+  function isPast(c) { if (curDay !== 0) return false; var n = new Date(), p = c.t.split(':'); return +p[0] * 60 + +p[1] <= n.getHours() * 60 + n.getMinutes(); }
+  function renderSched() {
+    document.querySelectorAll('#days .day').forEach(function (b) { var on = +b.dataset.d === curDay; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    document.querySelectorAll('#filters .flt').forEach(function (b) { b.classList.toggle('on', filt[b.dataset.f]); b.setAttribute('aria-pressed', filt[b.dataset.f]); });
+    var list = dayClasses(curDay).filter(function (c) { return filt[c.type]; });
+    document.getElementById('classes').innerHTML = list.length ? list.map(function (c, i) {
+      var j = joined[c.id], taken = c.taken + (j ? 1 : 0), free = c.cap - taken, past = isPast(c), full = free <= 0 && !j;
+      var lbl = past ? 'Прошла' : j ? '✓ Вы записаны' : full ? 'Мест нет' : 'Записаться';
+      return '<div class="cls' + (past ? ' past' : '') + '" style="--c:' + TYPES[c.type][1] + ';animation-delay:' + i * .04 + 's"><div class="tm">' + c.t + '<small>' + c.dur + ' мин</small></div>' +
+        '<div><h3>' + c.name + '<span class="lvl">' + c.lvl + '</span></h3><div class="meta">' + TYPES[c.type][0] + ' · тренер ' + c.coach + '</div></div>' +
+        '<div class="spots"><small><span>Свободно ' + Math.max(0, free) + ' из ' + c.cap + '</span><span>' + Math.round(taken / c.cap * 100) + '%</span></small><div class="bar"><i style="width:' + Math.min(100, taken / c.cap * 100) + '%"></i></div></div>' +
+        '<button class="btn btn-grad btn-sm' + (j ? ' joined' : '') + (full || past ? ' full' : '') + '" data-c="' + c.id + '"' + (past ? ' disabled' : '') + ' aria-pressed="' + !!j + '">' + lbl + '</button></div>';
+    }).join('') : '<div class="empty">Нет тренировок по выбранным фильтрам.</div>';
+    var ids = Object.keys(joined);
+    document.getElementById('my').classList.toggle('show', ids.length > 0);
+    document.getElementById('myList').textContent = ids.map(function (id) { return joined[id]; }).join(' · ');
+  }
+  document.getElementById('days').addEventListener('click', function (e) { var b = e.target.closest('[data-d]'); if (b) { curDay = +b.dataset.d; renderSched(); } });
+  document.getElementById('filters').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-f]'); if (!b) return;
+    var onCount = Object.keys(filt).filter(function (k) { return filt[k]; }).length;
+    if (onCount === 4) { Object.keys(filt).forEach(function (k) { filt[k] = k === b.dataset.f; }); }
+    else { filt[b.dataset.f] = !filt[b.dataset.f]; if (!Object.keys(filt).some(function (k) { return filt[k]; })) Object.keys(filt).forEach(function (k) { filt[k] = true; }); }
+    renderSched();
+  });
+  document.getElementById('classes').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-c]'); if (!b || b.disabled || b.classList.contains('full')) return;
+    var c = dayClasses(curDay).find(function (x) { return x.id === b.dataset.c; });
+    if (joined[c.id]) { delete joined[c.id]; renderSched(); return; }
+    var label = (curDay === 0 ? 'сегодня' : DOW[(week[curDay].getDay() + 6) % 7] + ' ' + week[curDay].getDate()) + ' ' + c.t + ' ' + c.name;
+    if (!user) { openModal({ mode: 'class', cls: c, label: label }); return; }
+    joined[c.id] = label; renderSched();
+  });
+  document.getElementById('myClear').addEventListener('click', function () { joined = {}; renderSched(); });
+  renderSched();
+
+  // ---------- Абонементы ----------
+  var PERIODS = [[1, 'Месяц', 0], [3, '3 месяца', 10], [6, 'Полгода', 20], [12, 'Год', 35]];
+  var PLANS = [
+    { id: 'day', name: 'Дневной', sub: 'Будни с 7:00 до 17:00', base: 2900, f: ['Тренажёрный зал', 'Групповые тренировки', 'Сауна'], no: ['Вечер и выходные'] },
+    { id: 'full', name: 'Полный', sub: 'Любое время, 24/7', base: 3900, hot: true, f: ['Тренажёрный зал 24/7', 'Все групповые тренировки', 'Сауна и хаммам', '2 тренировки с тренером'], no: [] },
+    { id: 'pro', name: 'Безлимит+', sub: 'С персональным тренером', base: 9900, f: ['Всё из «Полного»', '8 персональных в месяц', 'План питания', 'Полотенце и шкафчик'], no: [] }
+  ];
+  var per = 12;
+  document.getElementById('period').innerHTML = PERIODS.map(function (p) { return '<button role="radio" data-p="' + p[0] + '">' + p[1] + (p[2] ? '<em>−' + p[2] + '%</em>' : '') + '</button>'; }).join('');
+  function renderPlans() {
+    var disc = PERIODS.find(function (p) { return p[0] === per; })[2];
+    document.querySelectorAll('#period button').forEach(function (b) { var on = +b.dataset.p === per; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+    document.getElementById('plansGrid').innerHTML = PLANS.map(function (p, i) {
+      var m = Math.round(p.base * (1 - disc / 100) / 10) * 10, tot = m * per, save = p.base * per - tot;
+      return '<div class="plan' + (p.hot ? ' hot' : '') + '">' + (p.hot ? '<span class="tag">Выбор 70%</span>' : '') + '<h3>' + p.name + '</h3><div class="sub">' + p.sub + '</div><div class="price">' + rub(m).replace(' ₽', '') + '<small>₽ / мес</small></div>' +
+        '<div class="tot">' + (per > 1 ? rub(tot) + ' за ' + PERIODS.find(function (x) { return x[0] === per; })[1].toLowerCase() + ' · экономия <b>' + rub(save) + '</b>' : 'Оплата помесячно') + '</div><ul>' +
+        p.f.map(function (f) { return '<li>' + f + '</li>'; }).join('') + p.no.map(function (f) { return '<li class="no">' + f + '</li>'; }).join('') + '</ul>' +
+        '<button class="btn ' + (p.hot ? 'btn-lime' : 'btn-line') + '" data-plan="' + p.id + '" style="color:' + (p.hot ? 'var(--ink)' : '#fff') + '">Оформить</button></div>';
+    }).join('');
+  }
+  document.getElementById('period').addEventListener('click', function (e) { var b = e.target.closest('[data-p]'); if (b) { per = +b.dataset.p; renderPlans(); } });
+  document.getElementById('plansGrid').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-plan]'); if (!b) return;
+    var p = PLANS.find(function (x) { return x.id === b.dataset.plan; }), disc = PERIODS.find(function (x) { return x[0] === per; })[2], m = Math.round(p.base * (1 - disc / 100) / 10) * 10;
+    openModal({ mode: 'plan', plan: p, per: per, total: m * per });
+  });
+  renderPlans();
+
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .12, rootMargin: '0px 0px -40px 0px' }) : null;
+  document.querySelectorAll('.rv').forEach(function (el) { if (io) io.observe(el); else el.classList.add('in'); });
+
+  // ---------- Окно ----------
+  var modal = document.getElementById('modal'), st = {}, lastFocus = null, MN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  var TRIAL = [['gym', 'Тренажёрный зал с тренером', 'Покажем зал и составим программу · 60 мин'], ['group', 'Групповая тренировка', 'Любая из расписания · бесплатно'], ['box', 'Бокс с нуля', 'Персонально с Русланом · 45 мин']];
+  var TT = ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '19:00', '20:00', '21:00'];
+  function slotBusy(i, t) { if (i === 0) { var n = new Date(); if (parseInt(t) <= n.getHours()) return true; } return hash(i + t + st.trial) % 4 === 0; }
+  function openModal(o) {
+    lastFocus = document.activeElement;
+    st = { mode: o.mode || 'trial', cls: o.cls, label: o.label, plan: o.plan, per: o.per, total: o.total, trial: 'gym', day: null, time: null, name: user ? user.name : '', phone: user ? user.phone : '', done: false };
+    document.getElementById('mKick').textContent = st.mode === 'class' ? 'Запись на тренировку' : st.mode === 'plan' ? 'Абонемент' : 'Пробная тренировка';
+    modal.classList.add('open'); document.body.classList.add('lock');
+    render(); setTimeout(function () { modal.querySelector('.close').focus(); }, 50);
+  }
+  function closeModal() {
+    modal.classList.remove('open'); document.body.classList.remove('lock');
+    if (lastFocus && document.contains(lastFocus) && lastFocus.offsetParent !== null) lastFocus.focus();
+  }
+  document.querySelectorAll('[data-book]').forEach(function (b) { b.addEventListener('click', function () { openModal({ mode: 'trial' }); }); });
+  modal.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeModal(); });
+  function valid() { return st.name.trim().length > 1 && st.phone.replace(/\D/g, '').length === 11 && (st.mode !== 'trial' || (st.day !== null && st.time)); }
+  function render() {
+    var body = document.getElementById('bkBody'), foot = document.getElementById('bkFoot'), html = '';
+    if (st.done) {
+      var msg = st.mode === 'class' ? 'Вы записаны: ' + esc(st.label) + '. Теперь записываться на другие тренировки можно в один клик.' :
+        st.mode === 'plan' ? 'Менеджер позвонит в течение 15 минут, чтобы оформить абонемент «' + st.plan.name + '».' :
+        'Ждём вас ' + (st.day === 0 ? 'сегодня' : week[st.day].getDate() + ' ' + MN[week[st.day].getMonth()]) + ' в ' + st.time + '. Возьмите форму и воду, полотенце дадим.';
+      body.innerHTML = '<div class="done"><div class="ok"><svg width="46" height="46" viewBox="0 0 44 44" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 23l7 7 14-15"/></svg></div><div class="bk-t">Готово, ' + esc(st.name.trim().split(/\s+/)[0]) + '!</div><p class="bk-s" style="max-width:380px;margin:12px auto 0">' + msg + '</p></div>';
+      foot.innerHTML = '<button class="btn btn-grad" data-close>Отлично</button>';
+      return;
+    }
+    if (st.mode === 'class') {
+      html = '<div class="bk-t">' + esc(st.cls.name) + '</div><div class="bk-s">Один раз оставьте контакты, дальше запись в один клик.</div><div class="info"><div><span>Когда</span><b>' + esc(st.label.replace(' ' + st.cls.name, '')) + '</b></div><div><span>Тренер</span><b>' + st.cls.coach + '</b></div><div><span>Длительность</span><b>' + st.cls.dur + ' мин</b></div><div><span>Первая тренировка</span><b>бесплатно</b></div></div>';
+    } else if (st.mode === 'plan') {
+      html = '<div class="bk-t">' + st.plan.name + '</div><div class="bk-s">Оформим за 5 минут на ресепшене, оплата картой или СБП.</div><div class="info"><div><span>Срок</span><b>' + PERIODS.find(function (p) { return p[0] === st.per; })[1] + '</b></div><div><span>Итого</span><b>' + rub(st.total) + '</b></div><div><span>Заморозка</span><b>до 30 дней</b></div></div>';
+    } else {
+      html = '<div class="bk-t">Первая — бесплатно</div><div class="bk-s">Без абонемента и обязательств.</div><div class="opts">' + TRIAL.map(function (t) { var on = st.trial === t[0]; return '<button class="opt' + (on ? ' on' : '') + '" data-tr="' + t[0] + '" role="radio" aria-checked="' + on + '"><span class="tx"><b>' + t[1] + '</b><small>' + t[2] + '</small></span><span class="rd"></span></button>'; }).join('') + '</div>' +
+        '<div class="grp">День</div><div class="chips cdays">' + week.slice(0, 5).map(function (d, i) { return '<button class="chip' + (st.day === i ? ' on' : '') + '" data-day="' + i + '"><small>' + (i === 0 ? 'Сегодня' : DOW[(d.getDay() + 6) % 7]) + '</small>' + d.getDate() + '</button>'; }).join('') + '</div>';
+      if (st.day !== null) {
+        var free = TT.filter(function (t) { return !slotBusy(st.day, t); });
+        html += '<div class="grp">Время</div>' + (free.length ? '<div class="chips ctimes">' + TT.map(function (t) { var b = slotBusy(st.day, t); return '<button class="chip' + (st.time === t ? ' on' : '') + '" data-time="' + t + '"' + (b ? ' disabled aria-label="' + t + ', занято"' : '') + '>' + t + '</button>'; }).join('') + '</div>' : '<p class="note" style="font-size:14px">Сегодня свободного времени уже нет, выберите другой день.</p>');
+      }
+    }
+    html += '<div class="fld" style="margin-top:18px"><label for="fName">Имя</label><input id="fName" autocomplete="name" value="' + esc(st.name) + '"></div><div class="fld"><label for="fPhone">Телефон</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" value="' + esc(st.phone) + '"></div><p class="note">Это демонстрационный сайт: заявка никуда не отправляется.</p>';
+    body.innerHTML = html;
+    foot.innerHTML = '<button class="btn btn-grad" data-send' + (valid() ? '' : ' disabled') + '>' + (st.mode === 'plan' ? 'Оставить заявку' : 'Записаться') + '</button>';
+    var n = document.getElementById('fName'), p = document.getElementById('fPhone');
+    function upd() { var b = document.querySelector('[data-send]'); if (b) b.disabled = !valid(); }
+    n.addEventListener('input', function () { st.name = n.value; upd(); });
+    p.addEventListener('focus', function () { if (!p.value) p.value = '+7 ('; });
+    p.addEventListener('input', function () { p.value = maskPhone(p.value); st.phone = p.value; upd(); });
+  }
+  function maskPhone(v) {
+    var d = v.replace(/\D/g, ''); if (!d) return '';
+    var n = /^\s*\+7/.test(v) ? d.slice(1) : d;
+    if (n.length === 11 && (n[0] === '8' || n[0] === '7')) n = n.slice(1);
+    n = n.slice(0, 10);
+    if (!n) return v.length < 4 ? '' : '+7 (';
+    var r = '+7 (' + n.slice(0, 3);
+    if (n.length > 3) r += ') ' + n.slice(3, 6);
+    if (n.length > 6) r += '-' + n.slice(6, 8);
+    if (n.length > 8) r += '-' + n.slice(8, 10);
+    return r;
+  }
+  modal.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b.disabled) return;
+    if (b.dataset.tr) { st.trial = b.dataset.tr; if (st.time && st.day !== null && slotBusy(st.day, st.time)) st.time = null; render(); var a = modal.querySelector('[data-tr="' + b.dataset.tr + '"]'); if (a) a.focus({ preventScroll: true }); return; }
+    if (b.dataset.day) { st.day = +b.dataset.day; if (st.time && slotBusy(st.day, st.time)) st.time = null; return render(); }
+    if (b.dataset.time) { st.time = b.dataset.time; return render(); }
+    if (b.hasAttribute('data-send')) {
+      user = { name: st.name, phone: st.phone };
+      if (st.mode === 'class') { joined[st.cls.id] = st.label; renderSched(); }
+      st.done = true; render(); modal.querySelector('.sheet').scrollTop = 0;
+    }
+  });
+  addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (modal.classList.contains('open')) closeModal();
+      else if (document.body.classList.contains('menu-open')) { setMenu(false); burger.focus(); }
+      return;
+    }
+    if (e.key === 'Tab' && modal.classList.contains('open')) {
+      var f = [].filter.call(modal.querySelectorAll('button, input'), function (el) { return !el.disabled && el.offsetParent !== null; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (document.activeElement === last || !modal.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+    }
+  });
+})();
+</script>
+</body>
+</html>
